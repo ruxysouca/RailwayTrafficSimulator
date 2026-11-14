@@ -26,4 +26,17 @@ public class Train {
         return stops;
     }
 
+    public void addStop(TrainStop stop){
+        if(stop != null)
+            this.stops.add(stop);
+    }
+
+    public int getTotalDelayAtDestination(){
+        if(this.stops.isEmpty())
+            return 0;
+
+        TrainStop lastStop = this.stops.get(this.stops.size() - 1);
+        return lastStop.getAccumulatedDelayMinutes();
+    }
+
 }
