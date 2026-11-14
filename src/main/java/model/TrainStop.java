@@ -42,4 +42,25 @@ public class TrainStop {
     public LocalTime getActualDeparture(){
         return actualDeparture;
     }
+
+    public void calculateActualTimes(){
+        if (this.plannedArrival != null)
+            this.actualArrival = this.plannedArrival.plusMinutes(this.accumulatedDelayMinutes);
+
+        if (this.plannedDeparture != null)
+            this.actualDeparture = this.plannedDeparture.plusMinutes(this.accumulatedDelayMinutes);
+    }
+
+    public void addDelay(int minutes){
+        this.accumulatedDelayMinutes += minutes;
+        calculateActualTimes();
+    }
+
+    public boolean isOrigin(){
+        return this.plannedArrival == null;
+    }
+
+    public boolean isDestination(){
+        return this.plannedDeparture == null;
+    }
 }
