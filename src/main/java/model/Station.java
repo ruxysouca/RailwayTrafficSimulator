@@ -28,4 +28,11 @@ public class Station {
     public boolean hasAvailableCapacity(int currentlyOccupiedTracks){
         return currentlyOccupiedTracks < this.totalTracks;
     }
+
+    public boolean occupiesTrackAt(Train train, LocalTime time){
+        if (train == null || time == null)
+            return false;
+
+        return train.isAtStation(this.id, time);
+    }
 }
