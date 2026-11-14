@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,4 +40,35 @@ public class Train {
         return lastStop.getAccumulatedDelayMinutes();
     }
 
+    public void propagateDelay(int fromStationId, int minutes){
+        boolean stationFound = false;
+
+        for (TrainStop stop : this.stops){
+            if (stop.getStation().getId() == fromStationId)
+                stationFound = true;
+
+            if (stationFound)
+                stop.addDelay(minutes);
+        }
+    }
+
+    public boolean isAtStation(int stationId, LocalTime time){
+        for (TrainStop stop : this.stops){
+            if (stop.getStation().getId() == stationId){
+                LocalTime arrival = stop.getActualArrival();
+                LocalTime departure = stop.getActualDeparture();
+
+                if (arrival == null && departure != null)
+                    return time.equals(departure);
+
+                if (arrival != null && departure == null)
+                    return time.equals(arrival);
+
+                if (arrival != null && departure != null)
+                    return !time.isBefore(arrival) && !time.isAfter(departure);
+            }
+        }
+
+        return false;
+    }
 }
