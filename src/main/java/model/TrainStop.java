@@ -63,4 +63,20 @@ public class TrainStop {
     public boolean isDestination(){
         return this.plannedDeparture == null;
     }
+
+    public boolean exceedsDayBoundary(){
+        if (this.plannedArrival != null) {
+            int totalMinutes = this.plannedArrival.getHour() * 60 + this.plannedArrival.getMinute() + this.accumulatedDelayMinutes;
+            if (totalMinutes >= 24 * 60)
+                return true;
+        }
+
+        if (this.plannedDeparture != null) {
+            int totalMinutes = this.plannedDeparture.getHour() * 60 + this.plannedDeparture.getMinute() + this.accumulatedDelayMinutes;
+            if (totalMinutes >= 24 * 60)
+                return true;
+        }
+
+        return false;
+    }
 }
