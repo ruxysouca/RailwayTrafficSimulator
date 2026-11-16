@@ -13,23 +13,23 @@ public class Station {
         this.totalTracks = totalTracks;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public int getTotalTracks(){
+    public int getTotalTracks() {
         return totalTracks;
     }
 
-    public boolean hasAvailableCapacity(int currentlyOccupiedTracks){
+    public boolean hasAvailableCapacity(int currentlyOccupiedTracks) {
         return currentlyOccupiedTracks < this.totalTracks;
     }
 
-    public boolean occupiesTrackAt(Train train, LocalTime time){
+    public boolean occupiesTrackAt(Train train, LocalTime time) {
         if (train == null || time == null)
             return false;
 

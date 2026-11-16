@@ -9,30 +9,30 @@ public class Train {
     private String trainCode;
     private List<TrainStop> stops;
 
-    public Train(int id, String trainCode){
+    public Train(int id, String trainCode) {
         this.id = id;
         this.trainCode = trainCode;
         this.stops = new ArrayList<>();
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
-    public String getTrainCode(){
+    public String getTrainCode() {
         return  trainCode;
     }
 
-    public List<TrainStop> getStops(){
+    public List<TrainStop> getStops() {
         return stops;
     }
 
-    public void addStop(TrainStop stop){
+    public void addStop(TrainStop stop) {
         if(stop != null)
             this.stops.add(stop);
     }
 
-    public int getTotalDelayAtDestination(){
+    public int getTotalDelayAtDestination() {
         if(this.stops.isEmpty())
             return 0;
 
@@ -40,7 +40,7 @@ public class Train {
         return lastStop.getAccumulatedDelayMinutes();
     }
 
-    public void propagateDelay(int fromStationId, int minutes){
+    public void propagateDelay(int fromStationId, int minutes) {
         boolean stationFound = false;
 
         for (TrainStop stop : this.stops){
