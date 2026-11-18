@@ -91,7 +91,33 @@ public class TrainDAO {
     }
 
     private void loadStopsForTrain(Connection conn, Train train, List<Station> stations) throws SQLException {
-        // TODO : implement
+        String sqlStops = "SELECT station_id, planned_arrival, planned_departure, accumulated_delay " +
+                "FROM train_stops WHERE train_id = ? ORDER BY stop_order";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sqlStops)) {
+            pstmt.setInt(1, train.getId());
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    int stationId = rs.getInt("station_id");
+                    Station station = findStationById(stations, stationId);
+
+                    Time arrSql = rs.getTime("planned_arrival");
+                    Time depSql = rs.getTime("planned_departure");
+                    LocalTime plannedArrival = (arrSql != null) ? arrSql.toLocalTime() : null;
+                    LocalTime plannedDeparture = (depSql != null) ? depSql.toLocalTime() : null;
+                    int accumulatedDelay = rs.getInt("accumulated_delay");
+
+                    if (station != null) {
+                        TrainStop stop = new TrainStop(station, plannedArrival, plannedDeparture);
+                        if (accumulatedDelay > 0) {
+                            stop.addDelay(accumulatedDelay);
+                        }
+                        train.addStop(stop);
+                    }
+                }
+            }
+        }
     }
 
     public void updateTrainStopDelays(Train train) throws SQLException {
