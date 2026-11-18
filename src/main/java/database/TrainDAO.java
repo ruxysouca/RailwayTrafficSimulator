@@ -1,5 +1,12 @@
 package database;
 
+import model.Station;
+import model.Train;
+import model.TrainStop;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -60,5 +67,38 @@ public class TrainDAO {
         } else {
             pstmt.setTime(index, Time.valueOf(time));
         }
+    }
+
+    public List<Train> getAllTrains(List<Station> stations) throws SQLException {
+        List<Train> trains = new ArrayList<>();
+        String sqlTrains = "SELECT id, train_code FROM trains ORDER BY id";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sqlTrains);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String trainCode = rs.getString("train_code");
+                Train train = new Train(id, trainCode);
+
+                loadStopsForTrain(conn, train, stations);
+                trains.add(train);
+            }
+        }
+
+        return trains;
+    }
+
+    private void loadStopsForTrain(Connection conn, Train train, List<Station> stations) throws SQLException {
+        // TODO : implement
+    }
+
+    public void updateTrainStopDelays(Train train) throws SQLException {
+        // TODO : implement
+    }
+
+    private Station findStationById(List<Station> stations, int stationId) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }
