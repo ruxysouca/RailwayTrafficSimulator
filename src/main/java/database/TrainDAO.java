@@ -121,10 +121,29 @@ public class TrainDAO {
     }
 
     public void updateTrainStopDelays(Train train) throws SQLException {
-        // TODO : implement
+        String sql = "UPDATE train_stops SET accumulated_delay = ?, actual_arrival = ?, actual_departure = ? " +
+                "WHERE train_id = ? AND station_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            for (TrainStop stop : train.getStops()) {
+                pstmt.setInt(1, stop.getAccumulatedDelayMinutes());
+                setNullableTime(pstmt, 2, stop.getActualArrival());
+                setNullableTime(pstmt, 3, stop.getActualDeparture());
+                pstmt.setInt(4, train.getId());
+                pstmt.setInt(5, stop.getStation().getId());
+                pstmt.executeUpdate();
+            }
+        }
     }
 
     private Station findStationById(List<Station> stations, int stationId) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        for (Station s : stations) {
+            if (s.getId() == stationId) {
+                return s;
+            }
+        }
+
+        return null;
     }
 }
