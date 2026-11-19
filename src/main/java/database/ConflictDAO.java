@@ -49,8 +49,23 @@ public class ConflictDAO {
     }
 
     public List<ConflictRecord> getConflictsByStationId(int stationId) throws SQLException {
-        // TODO : implement
-        throw new UnsupportedOperationException("Not implemented yet");
+        List<ConflictRecord> conflicts = new ArrayList<>();
+        String sql = "SELECT id, station_id, train_id, user_id, conflict_time, extra_delay " +
+                "FROM conflicts WHERE station_id = ? ORDER BY conflict_time";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, stationId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    conflicts.add(mapRowToConflictRecord(rs));
+                }
+            }
+        }
+
+        return conflicts;
+
     }
 
     public void deleteAllConflicts() throws SQLException {
