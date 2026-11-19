@@ -90,5 +90,26 @@ public class RailwayService {
 
         return occupyingTrains;
     }
+
+    public boolean hasTrackConflict(int stationId, LocalTime time) {
+        if (time == null) {
+            return false;
+        }
+
+        Station targetStation = null;
+        for (Station station : this.stations) {
+            if (station.getId() == stationId) {
+                targetStation = station;
+                break;
+            }
+        }
+
+        if (targetStation == null) {
+            return false;
+        }
+
+        List<Train> occupyingTrains = getTrainsAtStationAtTime(stationId, time);
+        return occupyingTrains.size() > targetStation.getTotalTracks();
+    }
 }
 
