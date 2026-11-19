@@ -58,7 +58,13 @@ public class ConflictDAO {
     }
 
     private ConflictRecord mapRowToConflictRecord(ResultSet rs) throws SQLException {
-        // TODO : implement
-        throw new UnsupportedOperationException("Not implemented yet");
+        int id = rs.getInt("id");
+        int stationId = rs.getInt("station_id");
+        int trainId = rs.getInt("train_id");
+        int userId = rs.getInt("user_id");
+        LocalTime conflictTime = rs.getTime("conflict_time").toLocalTime();
+        int extraDelay = rs.getInt("extra_delay");
+
+        return new ConflictRecord(id, stationId, trainId, userId, conflictTime, extraDelay);
     }
 }
