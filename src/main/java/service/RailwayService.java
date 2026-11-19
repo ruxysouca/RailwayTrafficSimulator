@@ -47,4 +47,19 @@ public class RailwayService {
         return trains;
     }
 
+    public boolean applyDelayToTrain(String trainCode, int fromStationId, int delayMinutes) throws SQLException {
+        if (trainCode == null || delayMinutes <= 0) {
+            return false;
+        }
+
+        for (Train train : this.trains) {
+            if (train.getTrainCode().equalsIgnoreCase(trainCode.trim())) {
+                train.propagateDelay(fromStationId, delayMinutes);
+                trainDAO.updateTrainStopDelays(train);
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
