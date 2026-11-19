@@ -5,6 +5,7 @@ import database.StationDAO;
 import database.TrainDAO;
 import model.Station;
 import model.Train;
+import model.ConflictRecord;
 
 import java.sql.SQLException;
 import java.time.LocalTime;
@@ -110,6 +111,36 @@ public class RailwayService {
 
         List<Train> occupyingTrains = getTrainsAtStationAtTime(stationId, time);
         return occupyingTrains.size() > targetStation.getTotalTracks();
+    }
+
+    public ConflictRecord resolveConflict(int stationId, String trainCode, int userId,
+                                          LocalTime conflictTime, int extraDelayMinutes) throws SQLException {
+        if (trainCode == null || conflictTime == null || extraDelayMinutes <= 0) {
+            return null;
+        }
+
+        Train targetTrain = null;
+        for (Train train : this.trains) {
+            if (train.getTrainCode().equalsIgnoreCase(trainCode.trim())) {
+                targetTrain = train;
+                break;
+            }
+        }
+
+        if (targetTrain == null) {
+            return null;
+        }
+
+        targetTrain.propagateDelay(stationId, extraDelayMinutes);
+        trainDAO.updateTrainStopDelays(targetTrain);
+
+        int conflictId = conflictDAO.insertConflict(
+                stationId, targetTrain.getId(), userId, conflictTime, extraDelayMinutes
+        );
+
+        return new ConflictRecord(
+                conflictId, stationId, targetTrain.getId(), userId, conflictTime, extraDelayMinutes
+        );
     }
 }
 
