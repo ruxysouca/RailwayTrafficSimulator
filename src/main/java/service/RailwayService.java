@@ -7,6 +7,7 @@ import model.Station;
 import model.Train;
 
 import java.sql.SQLException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,4 +63,32 @@ public class RailwayService {
 
         return false;
     }
+
+    public List<Train> getTrainsAtStationAtTime(int stationId, LocalTime time) {
+        List<Train> occupyingTrains = new ArrayList<>();
+        if (time == null) {
+            return occupyingTrains;
+        }
+
+        Station targetStation = null;
+        for (Station station : this.stations) {
+            if (station.getId() == stationId) {
+                targetStation = station;
+                break;
+            }
+        }
+
+        if (targetStation == null) {
+            return occupyingTrains;
+        }
+
+        for (Train train : this.trains) {
+            if (targetStation.occupiesTrackAt(train, time)) {
+                occupyingTrains.add(train);
+            }
+        }
+
+        return occupyingTrains;
+    }
 }
+
