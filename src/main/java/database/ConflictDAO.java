@@ -69,7 +69,12 @@ public class ConflictDAO {
     }
 
     public void deleteAllConflicts() throws SQLException {
-        // TODO : implement
+        String sql = "DELETE FROM conflicts";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.executeUpdate();
+        }
     }
 
     private ConflictRecord mapRowToConflictRecord(ResultSet rs) throws SQLException {
