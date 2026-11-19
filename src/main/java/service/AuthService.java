@@ -2,6 +2,7 @@ package service;
 
 import database.UserDAO;
 import model.User;
+import model.UserRole;
 
 import java.sql.SQLException;
 
@@ -29,4 +30,17 @@ public class AuthService {
         return null;
     }
 
+    public boolean registerUser(String username, String password, UserRole role) throws SQLException {
+        if (username == null || username.isBlank() || password == null || password.isBlank() || role == null) {
+            return false;
+        }
+
+        String trimmedUsername = username.trim();
+        if (userDAO.findByUsername(trimmedUsername) != null) {
+            return false;
+        }
+
+        userDAO.insertUser(trimmedUsername, password, role);
+        return true;
+    }
 }
